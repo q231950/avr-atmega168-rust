@@ -1,0 +1,20 @@
+[package]
+name = "avr-atmega168"
+version = "0.1.0"
+authors = ["Martin Kim Dung-Pham <martinkim.pham@gmail.com>"]
+edition = "2018"
+
+[features]
+default = ["rt"]
+rt = ["atmega168-hal/rt"]
+
+[dependencies]
+panic-halt = "0.2.0"
+
+[dependencies.atmega168-hal]
+git = "https://github.com/Rahix/avr-hal"
+rev = "885e8ec6d6d2fe34f26a1e2697a99f41092f0985"
+
+[profile.dev]
+panic = "abort"
+lto = true
