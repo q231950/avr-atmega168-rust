@@ -1,14 +1,13 @@
 #![no_std]
 #![no_main]
 
-// Pull in the panic handler from panic-halt
 extern crate panic_halt;
 
 use atmega168_hal::prelude::*;
 
 #[atmega168_hal::entry]
 fn main() -> ! {
-    let mut step: i8 = 32;
+    let mut step: i8 = 23;
 
     let dp = atmega168_hal::pac::Peripherals::take().unwrap();
     let mut port_b = dp.PORTB.split();
@@ -16,33 +15,38 @@ fn main() -> ! {
     let mut port_d = dp.PORTD.split();
     let mut adc = atmega168_hal::adc::Adc::new(dp.ADC, Default::default());
 
-    // Reflective Opto Coupler
-    let mut optocoupler = port_c.pc0.into_analog_input(&mut adc);
+    // LED
     let mut led = port_b.pb1.into_output(&mut port_b.ddr);
+
+    // Reflective Opto Coupler
+    let mut optocoupler1 = port_c.pc0.into_analog_input(&mut adc);
+    let mut optocoupler2 = port_c.pc1.into_analog_input(&mut adc);
 
     // Push Button Switch
     let button_1 = port_d.pd0.into_pull_up_input(&mut port_d.ddr);
+    let button_2 = port_d.pd1.into_pull_up_input(&mut port_d.ddr);
 
     // Stepper Motor
-
-    let mut c1 = port_c.pc1.into_output(&mut port_c.ddr);
+    let mut c1 = port_b.pb2.into_output(&mut port_b.ddr);
     let mut c2 = port_c.pc2.into_output(&mut port_c.ddr);
     let mut c3 = port_c.pc3.into_output(&mut port_c.ddr);
     let mut c4 = port_c.pc4.into_output(&mut port_c.ddr);
 
     loop {
-        let value: u16 = nb::block!(adc.read(&mut optocoupler)).void_unwrap();
-        if value > 5 {
+        let opto_1_value: u16 = nb::block!(adc.read(&mut optocoupler1)).void_unwrap();
+        let opto_2_value: u16 = nb::block!(adc.read(&mut optocoupler2)).void_unwrap();
+
+        if opto_1_value > 5 || opto_2_value > 5 {
             led.set_high().void_unwrap();
         } else {
             led.set_low().void_unwrap();
         }
 
-        if button_1.is_high().unwrap_or(false) {
+        if button_1.is_high().unwrap_or(false) || button_2.is_high().unwrap_or(false) {
             led.set_high().void_unwrap();
         }
 
-        if value > 5 || button_1.is_high().unwrap_or(false) {
+        if opto_1_value > 5 || button_1.is_high().unwrap_or(false) {
             step += 1;
             step %= 4;
         } else {
