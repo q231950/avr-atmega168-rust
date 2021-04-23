@@ -4,8 +4,6 @@
 // Pull in the panic handler from panic-halt
 extern crate panic_halt;
 
-use atmega168_hal::clock::*;
-use atmega168_hal::delay::Delay;
 use atmega168_hal::prelude::*;
 
 #[atmega168_hal::entry]
@@ -31,8 +29,6 @@ fn main() -> ! {
     let mut c2 = port_c.pc2.into_output(&mut port_c.ddr);
     let mut c3 = port_c.pc3.into_output(&mut port_c.ddr);
     let mut c4 = port_c.pc4.into_output(&mut port_c.ddr);
-
-    let mut delay = Delay::<MHz1>::new();
 
     loop {
         let value: u16 = nb::block!(adc.read(&mut optocoupler)).void_unwrap();
@@ -83,7 +79,5 @@ fn main() -> ! {
             }
             _ => (),
         }
-
-        delay.delay_ms(1u8);
     }
 }
