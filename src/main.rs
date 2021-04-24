@@ -63,7 +63,9 @@ fn main() -> ! {
         let opto_0_value: u16 = nb::block!(adc.read(&mut optocoupler_0)).void_unwrap();
         let opto_1_value: u16 = nb::block!(adc.read(&mut optocoupler_1)).void_unwrap();
 
-        if opto_0_value > 5 {
+        if current_level == target_level {
+            // ignore changes in level sensors when the elevator sits in the correct position
+        } else if opto_0_value > 5 {
             current_level = 0
         } else if opto_1_value > 5 {
             current_level = 1
