@@ -19,3 +19,6 @@ rev = "885e8ec6d6d2fe34f26a1e2697a99f41092f0985"
 [profile.dev]
 panic = "abort"
 lto = true
+
+[profile.release]
+panic = "abort"
