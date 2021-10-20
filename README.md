@@ -1,8 +1,21 @@
 # Party w/ atmega168 🥳
 
+## Prerequisites
+
+```
+rustup default nightly-2021-01-07
+rustup component add rust-src
+sudo apt-get install gcc-avr
+sudo apt-get install avr-libc
+```
+
 ## Build
 
 `cargo build`
+
+or
+
+`cargo build --release`
 
 ## Flash
 
