@@ -1,4 +1,4 @@
-# Party w/ atmega168 🥳
+# Elevator Party w/ atmega168 🥳
 
 ## Prerequisites
 
